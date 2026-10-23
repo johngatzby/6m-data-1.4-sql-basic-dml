@@ -6,13 +6,65 @@ Work in two steps — everything you need was taught in this lesson:
 
 **Step A — Find the undervalued towns.** Write a `GROUP BY town` query with `HAVING AVG(resale_price) < 460000` to list towns where the average price is under $460,000. Run it and note down the town names.
 
+```sql
+SELECT
+    town,
+    AVG(resale_price) as avg_resale_price
+    
+FROM resale_flat_prices_2017
+group by town
+having AVG(resale_price) < 460000
+
+;
+```
+Town Name: Yishun
+
 **Step B — Find the biggest flats in those towns.** Write a second query that filters flats using the town names you found, with a plain `WHERE town IN ('…', '…', …)`, then sort by floor\_area\_sqm descending and keep the top 5.
 
-**Level Up:** Create a new column called price\_per\_sqm and find which town has the lowest average price per square meter.
+```sql
+SELECT
+    town,
+    block,
+    street_name,
+    floor_area_sqm,
+    resale_price
+FROM resale_flat_prices_2017
+WHERE upper(town) in ('YISHUN')
+ORDER by floor_area_sqm desc, resale_price desc
+limit 5
+;
+```
 
+**Level Up:** Create a new column called price\_per\_sqm and find which town has the lowest average price per square meter.
+```sql
+
+SELECT
+    town,
+    AVG(resale_price / floor_area_sqm) AS price_per_sqm
+FROM resale_flat_prices_2017
+GROUP BY town
+ORDER BY price_per_sqm ASC
+LIMIT 1
+
+```
 **🚀 Stretch goal (Lesson 1.5 preview):** a *subquery* lets you nest both steps into one query — try it after the two-step way works.
 
-
+```sql
+SELECT
+    town, block, street_name, floor_area_sqm, resale_price,
+    resale_price / floor_area_sqm AS price_per_sqm
+    
+FROM resale_flat_prices_2017
+WHERE town IN (
+    SELECT
+        town,
+    FROM resale_flat_prices_2017
+    group by town
+    having AVG(resale_price) < 460000
+)
+ORDER BY floor_area_sqm DESC, resale_price ASC
+LIMIT 5;
+```
 ---
 
 Write the SQL DML statements for the following questions.
