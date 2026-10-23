@@ -27,6 +27,12 @@ Select the minimum and maximum price per sqm of all the flats.
 
 ```sql
 
+SELECT
+  min(resale_price/floor_area_sqm) as min_price_sqm,
+  max(resale_price/floor_area_sqm) as max_price_sqm
+FROM
+  resale_flat_prices_2017
+;
 ```
 
 ### Question 2
