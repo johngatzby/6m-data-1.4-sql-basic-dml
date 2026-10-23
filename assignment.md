@@ -41,6 +41,15 @@ Select the average price per sqm for flats in each town.
 
 ```sql
 
+SELECT DISTINCT
+  town,
+  avg(resale_price/floor_area_sqm) as avg_ppsqm
+FROM
+  resale_flat_prices_2017
+GROUP by town
+order by avg_ppsqm desc
+;
+
 ```
 
 ### Question 3
@@ -53,6 +62,18 @@ Categorize flats into price ranges and count how many flats fall into each categ
   Show the counts in descending order.
 
 ```sql
+SELECT
+    case 
+        when (resale_price > 700000) then 'Premium'
+        when (resale_price between 400000 and 700000) then 'Mid-Range'
+        Else 'Budget'
+    end as pricerange,
+    count(*) as flatcount
+
+FROM resale_flat_prices_2017
+group by pricerange 
+order by flatcount DESC
+;
 
 ```
 
@@ -61,7 +82,16 @@ Categorize flats into price ranges and count how many flats fall into each categ
 Count the number of flats sold in each town during the first quarter of 2017 (January to March).
 
 ```sql
-
+SELECT
+    town,
+    count(case when date_part('month',cast((month || '-01') as DATE))=1 then 1 end) as flat_sold_Jan,
+    count(case when date_part('month',cast((month || '-01') as DATE))=2 then 1 end) as flat_sold_Feb,
+    count(case when date_part('month',cast((month || '-01') as DATE))=3 then 1 end) as flat_sold_Mar,
+    count(*) as flat_sold_Q1
+    
+FROM resale_flat_prices_2017
+where cast((month || '-01') as DATE) between DATE '2017-01-01' AND DATE '2017-03-01'
+Group by town;
 ```
 
 ---
